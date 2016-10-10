@@ -4,7 +4,15 @@ class BlogsController < ApplicationController
   # GET /blogs
   # GET /blogs.json
   def index
-    @blogs = Blog.all
+    @blogs = Blog.where(status:2)
+  end
+
+  def draft_index
+    @blogs = Blog.where(status:1)
+  end
+
+  def deleted_index
+    @blogs = Blog.where(status:3)
   end
 
   # GET /blogs/1
@@ -25,10 +33,19 @@ class BlogsController < ApplicationController
   # POST /blogs.json
   def create
     @blog = Blog.new(blog_params)
-
+    if params[:draft_button]
+      @blog.status = 1
+    else
+      @blog.status = 2
+    end
     respond_to do |format|
       if @blog.save
-        format.html { redirect_to @blog, notice: 'Blog was successfully created.' }
+        # format.html { redirect_to @blog, notice: 'Blog was successfully created.' }
+        if params[:draft_button]
+          format.html { redirect_to draft_index_path, notice: 'ブログが下書き保存されました' }
+        else
+          format.html { redirect_to blogs_path, notice: 'ブログが公開保存されました' }
+        end
         format.json { render :show, status: :created, location: @blog }
       else
         format.html { render :new }
@@ -41,8 +58,13 @@ class BlogsController < ApplicationController
   # PATCH/PUT /blogs/1.json
   def update
     respond_to do |format|
+      if params[:draft_button]
+        @blog.status = 1
+      else
+        @blog.status = 2
+      end
       if @blog.update(blog_params)
-        format.html { redirect_to @blog, notice: 'Blog was successfully updated.' }
+        format.html { redirect_to @blog, notice: 'ブログが更新されました' }
         format.json { render :show, status: :ok, location: @blog }
       else
         format.html { render :edit }
@@ -54,10 +76,17 @@ class BlogsController < ApplicationController
   # DELETE /blogs/1
   # DELETE /blogs/1.json
   def destroy
-    @blog.destroy
+    #   format.html { redirect_to blogs_url, notice: 'Blog was successfully destroyed.' }
+    #   format.json { head :no_content }
+    # end
     respond_to do |format|
-      format.html { redirect_to blogs_url, notice: 'Blog was successfully destroyed.' }
-      format.json { head :no_content }
+      @blog.status = 3
+      @blog.save
+      # if @blog.update(blog_params)
+        # format.html { redirect_to @blog, notice: 'ブログが削除されました' }
+        format.html { redirect_to blogs_path, notice: 'ブログが削除されました' }
+        format.json { head :no_content }
+      # end
     end
   end
 
@@ -69,6 +98,6 @@ class BlogsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def blog_params
-      params.require(:blog).permit(:title, :content, :status)
+      params.require(:blog).permit(:title, :content)
     end
 end

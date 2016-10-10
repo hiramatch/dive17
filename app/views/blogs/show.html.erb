@@ -1,3 +1,4 @@
+<h1>ブログ詳細</h1>
 <p id="notice"><%= notice %></p>
 
 <p>
@@ -12,8 +13,13 @@
 
 <p>
   <strong>状態:</strong>
-  <%= @blog.status %>
+  <%= '下書き' if @blog.status == 1 %>
+  <%= '公開' if @blog.status == 2 %>
+  <%= '削除' if @blog.status == 3 %>
 </p>
 
-<%= link_to '編集', edit_blog_path(@blog) %> |
-<%= link_to '戻る', blogs_path %>
+<%= link_to '編集', edit_blog_path(@blog) %>
+<br><br>
+<%= link_to 'ブログ一覧に戻る', blogs_path %>
+<br><br>
+<%= link_to '下書き一覧に戻る', draft_index_path %>

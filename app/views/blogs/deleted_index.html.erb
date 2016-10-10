@@ -1,6 +1,6 @@
 <p id="notice"><%= notice %></p>
 
-<h1>ブログ一覧</h1>
+<h1>削除済み一覧</h1>
 
 <table>
   <thead>
@@ -16,7 +16,6 @@
         <td><%= blog.title %></td>
         <td><%= link_to '詳細', blog %></td>
         <td><%= link_to '編集', edit_blog_path(blog) %></td>
-        <td><%= link_to '削除', blog, method: :delete, data: { confirm: '削除してよろしいですか?' } %></td>
       </tr>
     <% end %>
   </tbody>
@@ -24,8 +23,5 @@
 
 <br>
 
-<%= link_to '新規作成', new_blog_path %>
-<br><br>
-<%= link_to '下書き一覧', draft_index_path  %>
-<br><br>
-<%= link_to '削除済み一覧', deleted_index_path  %>
+<br>
+<%= link_to 'ブログ一覧に戻る', blogs_path %>
